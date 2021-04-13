@@ -4901,11 +4901,11 @@ enum ShippingErrorCode {
 type ShippingMethod implements Node & ObjectWithMetadata {
   id: ID!
   name: String!
+  description: JSONString
   minimumOrderWeight: Weight
   maximumOrderWeight: Weight
   maximumDeliveryDays: Int
   minimumDeliveryDays: Int
-  description: JSONString
   privateMetadata: [MetadataItem]!
   metadata: [MetadataItem]!
   type: ShippingMethodTypeEnum
@@ -4954,6 +4954,7 @@ type ShippingMethodPostalCodeRule implements Node {
 type ShippingMethodTranslatableContent implements Node {
   id: ID!
   name: String!
+  description: JSONString
   translation(languageCode: LanguageCodeEnum!): ShippingMethodTranslation
   shippingMethod: ShippingMethod
 }

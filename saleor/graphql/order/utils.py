@@ -97,10 +97,31 @@ def validate_order_lines(order, country):
                 raise ValidationError({"lines": errors})
 
 
+def validate_variants_is_available(order):
+    variants_ids = {line.variant_id for line in order.lines.all()}
+    available_variants = (
+        ProductVariant.objects.filter(id__in=variants_ids)
+        .available_in_channel(order.channel.slug)
+        .values_list("id", flat=True)
+    )
+    if unpublished_variants_ids := variants_ids.difference(set(available_variants)):
+        unpublished_variants = [
+            graphene.Node.to_global_id("ProductVariant", unpublished_variant_id)
+            for unpublished_variant_id in unpublished_variants_ids
+        ]
+        raise ValidationError(
+            {
+                "lines": ValidationError(
+                    "Can't finalize draft with unpublished variants.",
+                    code=OrderErrorCode.NOT_AVAILABLE_IN_CHANNEL,
+                    params={"variants": unpublished_variants},
+                )
+            }
+        )
+
+
 def validate_product_is_published(order):
-    variant_ids = []
-    for line in order.lines.all():
-        variant_ids.append(line.variant_id)
+    variant_ids = [line.variant_id for line in order.lines.all()]
     unpublished_product = Product.objects.filter(
         variants__id__in=variant_ids
     ).not_published(order.channel.slug)
@@ -219,9 +240,10 @@ def validate_draft_order(order, country):
         validate_shipping_method(order)
     validate_total_quantity(order)
     validate_order_lines(order, country)
+    validate_channel_is_active(order.channel)
     validate_product_is_published(order)
     validate_product_is_available_for_purchase(order)
-    validate_channel_is_active(order.channel)
+    validate_variants_is_available(order)
 
 
 def prepare_insufficient_stock_order_validation_errors(exc):

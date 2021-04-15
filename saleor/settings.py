@@ -48,7 +48,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1,10.8.0.8,*"
+_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1,10.8.0.8,10.8.0.*"
 
 ALLOWED_CLIENT_HOSTS = os.environ.get("ALLOWED_CLIENT_HOSTS")
 if not ALLOWED_CLIENT_HOSTS:
@@ -61,7 +61,7 @@ if not ALLOWED_CLIENT_HOSTS:
 
 ALLOWED_CLIENT_HOSTS = get_list(ALLOWED_CLIENT_HOSTS)
 
-INTERNAL_IPS = get_list(os.environ.get("INTERNAL_IPS", "127.0.0.1", "*", "10.8.0.8"))
+INTERNAL_IPS = get_list(os.environ.get("INTERNAL_IPS", "127.0.0.1", "*", "10.8.0.8", "10.8.0.*"))
 
 DATABASES = {
     "default": dj_database_url.config(

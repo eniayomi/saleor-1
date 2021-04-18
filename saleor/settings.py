@@ -33,7 +33,8 @@ def get_bool_from_env(name, default_value):
     return default_value
 
 
-DEBUG = get_bool_from_env("DEBUG", True)
+#DEBUG = "get_bool_from_env("DEBUG", True)"
+DEBUG = "True"
 
 SITE_ID = 1
 
@@ -48,7 +49,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1,10.8.0.8,10.8.0.*"
+_DEFAULT_CLIENT_HOSTS = "*"
 
 ALLOWED_CLIENT_HOSTS = os.environ.get("ALLOWED_CLIENT_HOSTS")
 if not ALLOWED_CLIENT_HOSTS:

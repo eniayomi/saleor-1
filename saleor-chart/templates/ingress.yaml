@@ -7,6 +7,8 @@ metadata:
   name: {{ $fullName }}
   labels:
     {{- include "saleor-chart.labels" . | nindent 4 }}
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "saleor-api"
 spec:
   backend:
     serviceName: {{ $fullName }}
